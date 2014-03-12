@@ -1,0 +1,114 @@
+<html>
+	<head>
+		<style>
+			.produto table {
+				width:100%;
+				color:navy;
+				border-style: none;
+				
+			}
+			.produto table td {
+				vertical-align:bottom;
+				text-align:left;	
+				width:100%;
+				}
+			
+			.produto {
+				width:400px;
+				background-color: silver;
+				margin:10px;
+			}
+			.small {
+				font-size: smaller;
+			}
+			
+		</style>
+		<script src="js/jquery-2.1.0.min.js"></script>
+		
+		<!-- vai ser usada a biblioteca doT.js -->
+		
+		<script src="js/doT.js"></script>
+		
+		<script>
+			$(document).ready(function () {
+				
+				// para armazenar a informação XML carregada
+				var docXML;
+				
+				// carrega documento XML do ficheiro
+				$.get("exemplo.xml",dadoscarregados,"xml");
+				
+				
+				// logo após ter carregado os dados 
+				function dadoscarregados(dadosXML) {
+					// guarda dados XML na variável docXML
+					docXML = dadosXML;
+					// mostra os produtos
+					mostraProdutos();
+				}
+				
+				// mostra produtos por categoria de acordo com filtro
+				function mostraProdutos() {					
+					
+					// o div onde serão mostrados os produtos
+					var montraDeProdutos = $("#divmontra");
+					// limpa o conteúdo da 'montraDeProdutos'
+					montraDeProdutos.empty();
+						
+					
+					// descobre todos os produtos
+					var todosOsProdutos = $(docXML).find("produto");
+					// para cada produto
+					todosOsProdutos.each( function () {
+						// este produto
+						var esteProduto = $(this);
+						// extrai informação do produto
+						var esteProdutoPreco = esteProduto.find("preco").text();
+						var esteProdutoDescricao = esteProduto.find("descricao").text();
+						var esteProdutoCategoria = esteProduto.find("categoria").text();
+						
+						// cria uma estrutura de dados com info do produto
+						// é depois usada no template da forma it.propriedade
+						dataProduto = new Object();
+						dataProduto.preco = esteProdutoPreco;
+						dataProduto.descricao = esteProdutoDescricao;
+						dataProduto.categoria = esteProdutoCategoria;
+						
+						// extrai texto que define o template
+						var definicaoTemplate = $("#produtoTMPL").text();
+						// cria funcao geradora de templates
+						var templateProduto = doT.template(definicaoTemplate);
+						// cria apresentacao de produto com base no template
+						var apresentaProduto = templateProduto(dataProduto);
+						// adiciona à montra
+						montraDeProdutos.append(apresentaProduto);
+						});
+					} // fim: mostraProdutosPorCategoria
+			}); // fim: ready
+		</script>
+	</head>
+	
+	<!-- TEMPLATE -->
+	<!-- O HTML que queremos que funcione como modelo -->
+	<!-- com os valores indicados dentro de {{it.nome_do_valor}} -->
+	
+	<script id="produtoTMPL" type="text/x-dot-template">
+		<div class="produto">
+		<table>
+			<tr>
+				<td colspan="2"><h1>{{=it.descricao}}</h1></td>
+			</tr>
+			<tr>
+				<td>{{=it.preco}}</td>
+				<td><span class="small">{{=it.categoria}}</span></td>
+			</tr>
+		</table>
+		</div>
+	</script>
+
+	
+	<body>
+		<!-- a montra -->
+		<div id="divmontra"></div>
+	</body>
+</html>
