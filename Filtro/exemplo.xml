@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- comentário XML -->
+<precario>
+	<nome>café da esquina</nome>
+	<proprietario>manuel silva</proprietario>
+	<horario>
+		<abertura>9h00m</abertura>
+		<encerramento>24h00m</encerramento>
+		<folga>segunda-feira</folga>
+	</horario>
+	<produtos>
+		<produto>
+			<descricao>café</descricao>
+			<preco>0.60€</preco>
+			<categoria>cafetaria</categoria>
+		</produto>
+		<produto>
+			<descricao>pingo direto</descricao>
+			<preco>0.70€</preco>
+			<categoria>cafetaria</categoria>
+		</produto>
+		<produto>
+			<descricao>sandes de queijo</descricao>
+			<preco>0.6€</preco>
+			<categoria>padaria</categoria>
+		</produto>
+		<produto>
+			<descricao>prego no prato</descricao>
+			<preco>5.00€</preco>
+			<categoria>restauração</categoria>
+		</produto>
+		<produto>
+			<descricao>gelado 1 bolas</descricao>
+			<preco>1.65€</preco>
+			<categoria>geladaria</categoria>
+		</produto>
+		<produto>
+			<descricao>gelado 2 bolas</descricao>
+			<preco>2.50€</preco>
+			<categoria>geladaria</categoria>
+		</produto>
+	</produtos>
+</precario>

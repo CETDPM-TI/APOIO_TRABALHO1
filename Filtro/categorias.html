@@ -1,0 +1,116 @@
+<html>
+	<head>
+		<script src="js/jquery-2.1.0.min.js"></script>
+		<script>
+			$(document).ready(function () {
+				
+				// para armazenar a informação XML carregada
+				var docXML;
+				
+				// carrega documento XML do ficheiro
+				$.get("exemplo.xml",dadoscarregados,"xml");
+				
+				// array para armazenar lista de categorias
+				var listaDeCategorias = new Array();
+				
+				
+				// logo após ter carregado os dados 
+				function dadoscarregados(dadosXML) {
+					// guarda dados XML na variável docXML
+					docXML = dadosXML;
+					// invoca função para descoberta de categorias
+					descobreCategorias();
+					// carrega e ativa o elemento 'select' com categorias
+					carregaSeletorCategorias();
+				}
+				
+				// descobre todas as categorias existente no diocumento XML
+				// carrega o array listaDeCategorias com as categorias, sem repetições
+				function descobreCategorias() {
+					// para guardar todos os nós XML chamados categoria
+					var todasAsCategorias = $(docXML).find("categoria");
+					// para cada nó categorria
+					todasAsCategorias.each(function () {
+						// extrai nome da categoria
+						var estaCategoria = $(this).text();
+						// verifica se 'estaCategoria' já existe em 'ListaDeCategorias'
+						// se a procura 'indexOf() devolver um indice > 0, existe
+						// se devolver -1, não existe
+						var estaCategoriaExiste = listaDeCategorias.indexOf(estaCategoria);
+						// se não existir
+						if (estaCategoriaExiste == -1) {
+							// adiciona ao fim do array da 'listaDeCategorias'
+							listaDeCategorias.push(estaCategoria);
+						}
+					});
+				}
+			
+				// carrega o elemento 'select' com opções correspondentes ás categorias
+				// ativa o elemento associando evento à mudança de seleção
+				function carregaSeletorCategorias() {
+					// o elemento seletor (já definido no HTML)
+					elementoSeletor = $("#iseletor");
+					
+					// para cada categoria cria uma opção com o respetivo
+					// valor e texto
+					for(i=0; i<listaDeCategorias.length; i++) {
+						var novaOpcaoCategoria = $("<option/>").attr("value",listaDeCategorias[i]).text(listaDeCategorias[i]);
+						elementoSeletor.append(novaOpcaoCategoria);	
+					}
+					// regista que quando ocorrer uma mudança na seleção
+					// devera ser chamada a função 'mostraProdutosPorCategoria'
+					elementoSeletor.change(mostraProdutosPorCategoria);
+					// força 'por software' uma seleção virtual
+					elementoSeletor.trigger("change");
+				}
+				
+				// mostra produtos por categoria de acordo com filtro
+				function mostraProdutosPorCategoria() {					
+					
+					// o div onde serão mostrados os produtos
+					var montraDeProdutos = $("#divmontra");
+					// limpa o conteúdo da 'montraDeProdutos'
+					montraDeProdutos.empty();
+						
+					// valor da categora seleccionada
+					var filtroCategoria 	= $("#iseletor option:selected").val();
+					// cria nova Expressão Regular com valor da categoria
+					var filtroCategoriaRE = new RegExp(filtroCategoria);
+					
+					// descobre todos os produtos
+					var todosOsProdutos = $(docXML).find("produto");
+					// para cada produto
+					todosOsProdutos.each( function () {
+						// este produto
+						var esteProduto = $(this);
+						// extrai a cateoria de 'esteProduto'
+						var esteProdutoCategoria   = esteProduto.find("categoria").text();
+						
+						// se a esteProdutoCategoria corresponder ao filtro
+						if (filtroCategoriaRE.test(esteProdutoCategoria)) {
+							// extrai informação do produto
+							var esteProdutoPreco = esteProduto.find("preco").text();
+							var esteProdutoDescricao = esteProduto.find("descricao").text();
+							// cria HTML para apresentação da informação
+							var textoProduto = $("<p/>")
+							textoProduto.text(esteProdutoDescricao + " : " + esteProdutoPreco);
+							// adiciona essa informação à 'montraDeProdutos'
+							montraDeProdutos.append(textoProduto);
+						} // fim : if
+						});
+					} // fim: mostraProdutosPorCategoria
+			}); // fim: ready
+		</script>
+	</head>
+	<body>
+		<!-- o filtro -->
+		<div id="filtro">
+			filtre por categoria: 
+			<select id="iseletor">
+				<option value="">Todos</option>
+			</select>
+		</div>
+		<!-- a montra -->
+		<div id="divmontra"></div>
+	</body>
+</html>
